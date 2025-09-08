@@ -6,6 +6,13 @@ pipeline {
   }
 
   stages {
+  stage('Debug') {
+  steps {
+    bat 'echo %DOCKER_USER%'
+    bat 'docker --version'
+    bat 'gradlew.bat --version'
+  }
+}
     stage('Checkout') {
       steps {
         checkout scm
@@ -20,8 +27,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        bat 'gradlew test --tests "okhttp3.*" --tests "okhttp3.internal.publicsuffix.*" -Dtest.java.version=21 -Dokhttp.platform=jdk9'
-        bat 'gradlew jacocoTestReport'
+        bat 'gradlew test -Dtest.java.version=21 -Dokhttp.platform=jdk9'
       }
     }
     stage('Deploy with Docker') {
@@ -47,15 +53,6 @@ pipeline {
     }
   }
   post {
-      always {
-        jacoco(
-          execPattern: '**/build/jacoco/test.exec',
-          classPattern: '**/build/classes/java/main',
-          sourcePattern: '**/src/main/java',
-          inclusionPattern: '**/*.class',
-          exclusionPattern: '**/test/**'
-      )
-    }
     success {
       echo 'Pipeline completed successfully!'
     }

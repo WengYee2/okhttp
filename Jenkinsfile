@@ -1,18 +1,10 @@
 pipeline {
   agent any
-
   environment {
     DOCKER_CREDS = credentials('docker-hub-creds')
   }
 
   stages {
-  stage('Debug') {
-  steps {
-    bat 'echo %DOCKER_USER%'
-    bat 'docker --version'
-    bat 'gradlew.bat --version'
-  }
-}
     stage('Checkout') {
       steps {
         checkout scm

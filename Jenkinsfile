@@ -33,7 +33,7 @@ pipeline {
           // Login to Docker Hub
           bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
           
-          // Build Docker image with your Dockerfile in the project root
+          // Build Docker image with Dockerfile in the project root
           bat 'docker build -t %DOCKER_USER%/okhttp-custom:latest .'
           
           // Push Docker image to Docker Hub
@@ -43,6 +43,14 @@ pipeline {
           bat 'docker logout'
         }
       }
+    }
+  }
+  post {
+    success {
+      echo 'Pipeline completed successfully!'
+    }
+    failure {
+      echo 'Pipeline failed. Please check the logs.'
     }
   }
 }

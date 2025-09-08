@@ -4,6 +4,15 @@ pipeline {
   environment {
     DOCKER_CREDS = credentials('docker-hub-creds')
   }
+  
+  stage('Debug') {
+  steps {
+    bat 'echo %DOCKER_USER%'
+    bat 'docker --version'
+    bat 'gradlew.bat --version'
+  }
+}
+
 
   stages {
     stage('Checkout') {
@@ -14,7 +23,7 @@ pipeline {
 
     stage('Build') {
         steps {
-            bat 'gradlew clean build -x test -Dtest.java.version=21 -Dokhttp.platform=jdk9'
+            bat '.\\gradlew clean build -x test -Dtest.java.version=21 -Dokhttp.platform=jdk9'
         }
     }
 

@@ -4,7 +4,8 @@ pipeline {
   environment {
     DOCKER_CREDS = credentials('docker-hub-creds')
   }
-  
+
+  stages {
   stage('Debug') {
   steps {
     bat 'echo %DOCKER_USER%'
@@ -12,9 +13,6 @@ pipeline {
     bat 'gradlew.bat --version'
   }
 }
-
-
-  stages {
     stage('Checkout') {
       steps {
         checkout scm
@@ -55,6 +53,15 @@ pipeline {
     }
   }
   post {
+      always {
+        jacoco(
+          execPattern: '**/build/jacoco/test.exec',
+          classPattern: '**/build/classes/java/main',
+          sourcePattern: '**/src/main/java',
+          inclusionPattern: '**/*.class',
+          exclusionPattern: '**/test/**'
+      )
+    }
     success {
       echo 'Pipeline completed successfully!'
     }
